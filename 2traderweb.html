@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2TRADERS | EthioTrader Digital Hub</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* --- GLOBAL STYLES & DESIGN TOKEN --- */
+        :root {
+            --primary-bg: #0b1120; /* Deep Slate */
+            --secondary-bg: #1e293b; /* Card Background */
+            --accent-color: #ff9800; /* Vibrant Orange/Amber */
+            --accent-hover: #e68900;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: #e2e8f0; 
+            transition: background-color 0.5s;
+        }
+        
+        /* --- BRANDING & HEADER --- */
+        .brand-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 5px rgba(255, 152, 0, 0.5); /* Subtle glowing effect */
+        }
+
+        /* --- ACCENT COLORS & UTILITIES --- */
+        .accent-bg { background-color: var(--accent-color); }
+        .accent-text { color: var(--accent-color); }
+        .accent-shadow { box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3); }
+
+        .btn-primary {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, var(--accent-color), #ffb347); /* Gradient primary button */
+            color: #0b1120;
+            font-weight: 700;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #e68900, #ff9800);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.6);
+        }
+
+        /* --- CARD & LAYOUT STYLES --- */
+        .card-bg {
+            background-color: var(--secondary-bg);
+            border: 1px solid #334155; 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+        .card-bg:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-color);
+        }
+        
+        /* --- HERO SECTION --- */
+        #hero {
+            background-image: url('uploaded:image_d2469a.jpg-105df558-02f5-480e-a9c3-25dbec779f1b');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; 
+            min-height: 85vh;
+            position: relative;
+        }
+        .hero-overlay {
+            background-color: rgba(11, 17, 32, 0.85); /* Darker overlay for high contrast */
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .hero-text-shadow {
+            text-shadow: 0 0 10px rgba(0, 0, 0, 1);
+        }
+        
+        /* --- DIGITAL LIBRARY TABS --- */
+        .tab-button {
+            transition: all 0.2s ease;
+            background-color: #334155; /* Slate-700 */
+        }
+        .tab-button.active {
+            background-color: var(--accent-color);
+            color: var(--primary-bg);
+            font-weight: 700;
+            box-shadow: 0 2px 10px rgba(255, 152, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Modal & Custom Alert Styles (Retained) */
+        .modal { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(6px); }
+        .modal-content {
+            background-color: var(--secondary-bg); 
+            margin: 8% auto; padding: 30px; border: 2px solid var(--accent-color); 
+            width: 90%; max-width: 500px; border-radius: 12px; color: white; position: relative;
+        }
+        .close-btn { color: white; float: right; font-size: 28px; font-weight: bold; }
+        .close-btn:hover, .close-btn:focus { color: var(--accent-color); text-decoration: none; cursor: pointer; }
+        .chat-container { background-color: var(--primary-bg); border: 1px solid #334155; }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="bg-gray-900 shadow-2xl fixed w-full z-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- Logo/Brand - Refined Presentation -->
+            <a href="#" class="brand-logo accent-text">
+                <i class="fas fa-chart-area mr-2"></i> 2TRADERS <span class="text-white text-base font-medium">| EthioTrader</span>
+            </a>
+            
+            <!-- Global Search Bar -->
+            <div class="hidden lg:block w-full max-w-md mx-8">
+                <div class="relative">
+                    <input type="search" id="globalSearchInput" 
+                           placeholder="ገበያውን፣ ኮርሶችን ወይም መረጃን ይፈልጉ..." 
+                           class="w-full py-2 pl-10 pr-4 bg-gray-700 border border-gray-600 rounded-full text-sm text-gray-200 focus:ring-amber-500 focus:border-amber-500 transition duration-150 shadow-inner"
+                           onkeypress="handleGlobalSearch(event)">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                <a href="#live-market" class="text-gray-300 hover:accent-text transition">Market Data</a>
+                <a href="#digital-library" class="text-gray-300 hover:accent-text transition">Digital Library</a>
+                <a href="#copy-trade" class="text-gray-300 hover:accent-text transition">Copy Trade</a>
+                <a href="#social" class="text-gray-300 hover:accent-text transition">Community</a>
+                <a href="#" onclick="showLoginModal()" class="btn-primary py-2 px-4 rounded-full text-xs hover:text-white shadow-xl">
+                    <i class="fas fa-user-circle mr-1"></i> Login / Register
+                </a>
+            </nav>
+            <button class="md:hidden text-gray-300 focus:outline-none">
+                <i class="fas fa-bars fa-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="pt-24 text-center">
+        <div class="hero-overlay">
+            <div class="container mx-auto p-4 md:p-8 max-w-5xl text-white rounded-xl">
+                <!-- Refined Hero Title -->
+                <h1 class="text-5xl sm:text-7xl font-extrabold mb-4 leading-tight accent-text hero-text-shadow">
+                    Digital Trading Mastery
+                </h1>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-white hero-text-shadow">
+                    2TRADERS | ETHIOTRADER
+                </h2>
+                <p class="text-lg sm:text-xl mb-10 font-light max-w-4xl mx-auto text-yellow-100 hero-text-shadow">
+                    የፋይናንስ ገበያዎችን (ፎሬክስ፣ ክሪፕቶ) ከሁለት ባለሙያዎች ጋር በመሆን ይቆጣጠሩ።
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="#live-market" class="btn-primary py-3 px-8 rounded-full shadow-2xl">
+                        <i class="fas fa-chart-line mr-2"></i> Live Market Grounding
+                    </a>
+                    <a href="#digital-library" class="border-2 border-white hover:border-amber-500 text-white hover:accent-text font-bold py-3 px-8 rounded-full transition duration-300">
+                        <i class="fas fa-laptop-code mr-2"></i> Start Digital Learning
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Live Crypto Market Data Section (Grounding Tool) -->
+    <section id="live-market" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <h2 class="text-3xl font-bold text-center accent-text mb-2">Live Market Data & Search (የቀጥታ ገበያ መረጃ)</h2>
+            <p class="text-center text-md text-gray-400 mb-8">
+                እውነተኛ ጊዜ የገበያ መረጃዎችን እና ማንኛውንም የፋይናንስ ርዕስ ከ Gemini API ጋር ይፈልጉ።
+            </p>
+
+            <div class="card-bg p-6 md:p-8 rounded-xl shadow-2xl">
+                <!-- Input Area -->
+                <div class="mb-6 flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="cryptoQuery" value="current price of Bitcoin and Ethereum"
+                        class="flex-grow p-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-amber-500 focus:border-amber-500 transition duration-150 shadow-inner"
+                        placeholder="የግብይት ጥያቄ ያስገቡ (ለምሳሌ: 'price of gold and oil today')">
+                    <button id="fetchButton"
+                            class="accent-bg text-gray-900 p-3 rounded-lg font-semibold hover:bg-amber-600 transition duration-150 shadow-md active:scale-[.98]">
+                        <i class="fas fa-sync-alt mr-2"></i> Fetch Live Data
+                    </button>
+                </div>
+
+                <!-- Loading/Error Area -->
+                <div id="statusMessage" class="hidden p-3 mb-4 rounded-lg text-center font-medium transition duration-300"></div>
+
+                <!-- Result Display Area -->
+                <div class="mt-8">
+                    <h3 class="text-xl font-bold text-gray-200 mb-4 flex items-center">
+                        <i class="fas fa-database mr-2 accent-text"></i> Grounded Information
+                    </h3>
+                    
+                    <div id="marketData" class="text-lg leading-relaxed min-h-[150px] p-4 bg-gray-900 rounded-lg border border-gray-700 text-gray-300">
+                        <p class="text-gray-500 italic">Data is loading...</p>
+                    </div>
+                </div>
+
+                <!-- Sources/Citations Area -->
+                <div class="mt-6 border-t pt-4 border-gray-700">
+                    <h4 class="text-md font-semibold text-gray-400 mb-2">Sources (ምንጮች)</h4>
+                    <div id="sourcesList" class="text-sm text-gray-500 space-y-1">
+                        <p class="italic" id="sourcePlaceholder">Sources will appear here after fetching data.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Digital Library (Refined Learning Center) -->
+    <section id="digital-library" class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <h2 class="text-3xl font-bold text-center accent-text mb-2">Digital Trading Library (የትምህርት መዝገብ ቤት)</h2>
+            <p class="text-center text-md text-gray-400 mb-10">
+                የተደራጁ የቪዲዮ ኮርሶች፣ ፒዲኤፍ መጻሕፍት እና ጠቃሚ የግብይት መመሪያዎችን በአንድ ቦታ ያግኙ።
+            </p>
+
+            <div class="card-bg p-4 rounded-xl shadow-2xl">
+                <!-- Tab Navigation -->
+                <div class="flex flex-wrap justify-center gap-2 mb-6 border-b border-gray-700 pb-4">
+                    <button class="tab-button active py-2 px-6 rounded-full text-white text-sm" data-tab="videos" onclick="switchTab('videos', this)">
+                        <i class="fas fa-video mr-2"></i> ቪዲዮ ኮርሶች (YouTube)
+                    </button>
+                    <button class="tab-button py-2 px-6 rounded-full text-white text-sm" data-tab="pdfs" onclick="switchTab('pdfs', this)">
+                        <i class="fas fa-file-pdf mr-2"></i> PDF መጻሕፍትና መመሪያዎች
+                    </button>
+                    <button class="tab-button py-2 px-6 rounded-full text-white text-sm" data-tab="glossary" onclick="switchTab('glossary', this)">
+                        <i class="fas fa-spell-check mr-2"></i> የግብይት መዝገበ ቃላት
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="library-content">
+                    
+                    <!-- 1. Video Courses Content -->
+                    <div id="videos" class="tab-pane">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="p-6 bg-gray-800 rounded-lg border border-gray-700">
+                                <h3 class="text-xl font-bold accent-text mb-2">Beginner's Trading Roadmap</h3>
+                                <p class="text-gray-400 mb-4">Forex እና Crypto ን ከጅምሩ ይማሩ። የፓይፕ፣ የሎት እና የአደጋ አስተዳደር መሠረቶች።</p>
+                                <a href="https://www.youtube.com/@2TRADER3" target="_blank" class="btn-primary py-2 px-4 rounded-full text-sm inline-flex items-center">
+                                    <i class="fab fa-youtube mr-2"></i> ወደ ቻናል ይሂዱ
+                                </a>
+                            </div>
+                            <div class="p-6 bg-gray-800 rounded-lg border border-gray-700">
+                                <h3 class="text-xl font-bold accent-text mb-2">Advanced Technical Analysis</h3>
+                                <p class="text-gray-400 mb-4">Smart Money Concepts, Order Blocks, Liquidity, and advanced price action strategies.</p>
+                                <a href="https://www.youtube.com/@2TRADER3" target="_blank" class="btn-primary py-2 px-4 rounded-full text-sm inline-flex items-center">
+                                    <i class="fab fa-youtube mr-2"></i> ወደ ቻናል ይሂዱ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 2. PDF Books/Guides Content (Hidden by default) -->
+                    <div id="pdfs" class="tab-pane hidden">
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="p-4 bg-gray-800 rounded-lg border border-gray-700 flex flex-col justify-between">
+                                <h3 class="text-lg font-bold text-white mb-2">Forex 101 Guide</h3>
+                                <p class="text-gray-400 text-sm mb-4">The ultimate guide to the currency market basics.</p>
+                                <button onclick="customAlert('Download started for Forex 101. (Simulation)')" class="accent-bg text-gray-900 py-2 px-4 rounded-lg text-sm hover:bg-amber-600">
+                                    <i class="fas fa-download mr-1"></i> Download (5MB)
+                                </button>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg border border-gray-700 flex flex-col justify-between">
+                                <h3 class="text-lg font-bold text-white mb-2">Crypto Investing Blueprint</h3>
+                                <p class="text-gray-400 text-sm mb-4">How to start investing and holding cryptocurrencies safely.</p>
+                                <button onclick="customAlert('Download started for Crypto Blueprint. (Simulation)')" class="accent-bg text-gray-900 py-2 px-4 rounded-lg text-sm hover:bg-amber-600">
+                                    <i class="fas fa-download mr-1"></i> Download (8MB)
+                                </button>
+                            </div>
+                            <div class="p-4 bg-gray-800 rounded-lg border border-gray-700 flex flex-col justify-between">
+                                <h3 class="text-lg font-bold text-white mb-2">Risk Management Checklist</h3>
+                                <p class="text-gray-400 text-sm mb-4">A simple checklist to protect your capital on every trade.</p>
+                                <button onclick="customAlert('Download started for Risk Checklist. (Simulation)')" class="accent-bg text-gray-900 py-2 px-4 rounded-lg text-sm hover:bg-amber-600">
+                                    <i class="fas fa-download mr-1"></i> Download (2MB)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Glossary Content (Hidden by default) -->
+                    <div id="glossary" class="tab-pane hidden">
+                        <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                            <ul class="grid md:grid-cols-2 gap-y-3 gap-x-6 text-gray-300">
+                                <li><span class="accent-text font-semibold">Pips:</span> Price Interest Points, used in Forex.</li>
+                                <li><span class="accent-text font-semibold">Lot Size:</span> The volume of a trade.</li>
+                                <li><span class="accent-text font-semibold">Margin:</span> Borrowed money used to execute trades.</li>
+                                <li><span class="accent-text font-semibold">Drawdown:</span> The peak-to-trough decline during a specific period.</li>
+                                <li><span class="accent-text font-semibold">Liquidity:</span> The ability to buy or sell an asset quickly.</li>
+                                <li><span class="accent-text font-semibold">HODL:</span> Hold On for Dear Life (Crypto term).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Copy Trading Section -->
+    <section id="copy-trade" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <h2 class="text-3xl font-bold text-center accent-text mb-2">Verified Copy Trade (የኮፒ ትሬድ አገልግሎት)</h2>
+            <p class="text-center text-md text-gray-400 mb-10">
+                ከባለሙያዎች ጋር ይተባበሩ፡ አውቶማቲክ ግብይት ለአነስተኛ ስጋት ከፍተኛ ትርፍ።
+            </p>
+
+            <div class="card-bg p-8 md:p-12 rounded-xl shadow-2xl">
+                <div class="grid md:grid-cols-3 gap-8 text-center mb-10">
+                    <div class="p-4 bg-gray-900 rounded-lg border-l-4 border-green-500 shadow-md">
+                        <p class="text-4xl font-extrabold text-green-400">240%</p>
+                        <p class="text-gray-400 text-sm mt-1">3-Month Profit</p>
+                    </div>
+                    <div class="p-4 bg-gray-900 rounded-lg border-l-4 border-yellow-500 shadow-md">
+                        <p class="text-4xl font-extrabold text-yellow-400">88%</p>
+                        <p class="text-gray-400 text-sm mt-1">Win Rate</p>
+                    </div>
+                    <div class="p-4 bg-gray-900 rounded-lg border-l-4 border-blue-500 shadow-md">
+                        <p class="text-4xl font-extrabold text-blue-400">2,500+</p>
+                        <p class="text-gray-400 text-sm mt-1">Active Followers</p>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold mb-3 text-white">Top Strategy: "EthioPips Pro Algo"</h3>
+                    <p class="text-gray-400 mb-6 max-w-2xl mx-auto">
+                        A proprietary algorithm developed by the 2TRADERS team, focusing on high-probability, low-drawdown trades on major currency pairs.
+                    </p>
+                    <button onclick="showPaymentModal()"
+                        class="btn-primary py-3 px-10 rounded-full text-lg shadow-2xl">
+                        <i class="fas fa-rocket mr-2"></i> Activate Pro Algo ($22/mo)
+                    </button>
+                    <p class="text-xs text-gray-500 mt-3">Cancel anytime. 7-day free trial simulated.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Integration Section (Community) -->
+    <section id="social" class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <h2 class="text-3xl font-bold text-center accent-text mb-2">Join Our Digital Community (የማህበራዊ ገጾች)</h2>
+            <p class="text-center text-md text-gray-400 mb-10">
+                ከዓለም አቀፍ የግብይት ማህበረሰብ ጋር ይገናኙ።
+            </p>
+
+            <div class="grid md:grid-cols-4 gap-6">
+                
+                <!-- 1. Telegram Card -->
+                <div class="card-bg p-6 rounded-xl text-center hover:shadow-blue-500/30 transition duration-300">
+                    <i class="fab fa-telegram fa-4x text-blue-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Telegram Group</h3>
+                    <p class="text-gray-400 text-sm mb-4">Direct market news and Q&A sessions.</p>
+                    <a href="https://t.me/TWOTRADER3" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg text-sm block transition duration-200">
+                        Join TWOTRADER3 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                
+                <!-- 2. Instagram Card -->
+                <div class="card-bg p-6 rounded-xl text-center hover:shadow-pink-500/30 transition duration-300">
+                    <i class="fab fa-instagram fa-4x text-pink-500 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Instagram Page</h3>
+                    <p class="text-gray-400 text-sm mb-4">Motivational quotes and daily visual insights.</p>
+                    <a href="https://www.instagram.com/xautrader9?igsh=dG5xenBpeXFncXkw" target="_blank" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-6 rounded-lg text-sm block transition duration-200">
+                        Follow xautrader9 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                
+                <!-- 3. YouTube Card -->
+                <div class="card-bg p-6 rounded-xl text-center hover:shadow-red-500/30 transition duration-300">
+                    <i class="fab fa-youtube fa-4x text-red-500 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">YouTube Channel</h3>
+                    <p class="text-gray-400 mb-4">Full educational videos and market analysis.</p>
+                    <a href="https://www.youtube.com/@2TRADER3" target="_blank" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg text-sm block transition duration-200">
+                        Subscribe <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+
+                <!-- 4. TikTok Card -->
+                <div class="card-bg p-6 rounded-xl text-center hover:shadow-white/30 transition duration-300">
+                    <i class="fab fa-tiktok fa-4x text-white mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">TikTok Feed</h3>
+                    <p class="text-gray-400 text-sm mb-4">Short, viral, and engaging trading tips.</p>
+                    <a href="https://www.tiktok.com/@2traders3" target="_blank" class="bg-white hover:bg-gray-200 text-gray-900 font-bold py-2 px-6 rounded-lg text-sm block transition duration-200">
+                        Follow @2traders3 <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Chat Button and Modals -->
+    <button id="floating-chat-btn" onclick="showSupportModal()" class="accent-bg hover:bg-amber-600 text-gray-900 font-bold transition duration-300 w-14 h-14 rounded-full fixed bottom-6 right-6 flex items-center justify-center shadow-2xl z-30">
+        <i class="fas fa-headset fa-xl"></i>
+    </button>
+    
+    <!-- 1. Payment Modal -->
+    <div id="paymentModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closePaymentModal()">&times;</span>
+        <h2 class="text-2xl font-bold mb-4 accent-text">Subscribe to Pro Algo ($22/mo)</h2>
+        <p class="mb-6 text-gray-400">
+            ⚠️ **Simulation Warning:** Live payment integration is simulated. Please choose a method to proceed.
+        </p>
+        
+        <div class="flex flex-col space-y-3">
+            <button onclick="simulatePayment('Telebirr')" class="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg flex items-center justify-start text-left text-white">
+                <i class="fas fa-mobile-alt w-5 accent-text mr-3"></i> Telebirr (የቴሌብር ክፍያ)
+            </button>
+            <button onclick="simulatePayment('CBE/Abyssinia Bank Transfer')" class="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg flex items-center justify-start text-left text-white">
+                <i class="fas fa-university w-5 accent-text mr-3"></i> Ethiopian Banks (CBE/Abyssinia)
+            </button>
+            <button onclick="simulatePayment('Crypto (Binance)')" class="bg-gray-700 hover:bg-gray-600 p-3 rounded-lg flex items-center justify-start text-left text-white">
+                <i class="fas fa-coins w-5 accent-text mr-3"></i> Crypto (Binance/Bybit)
+            </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Login/Signup Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+            <h2 class="text-2xl font-bold mb-6 accent-text text-center">Digital Hub Login / Register</h2>
+            
+            <form id="signupForm" onsubmit="simulateLogin(event)">
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-400 font-semibold mb-2">Full Name</label>
+                    <input type="text" id="name" class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-amber-500 focus:border-amber-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="regEmail" class="block text-gray-400 font-semibold mb-2">Email</label>
+                    <input type="email" id="regEmail" class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-amber-500 focus:border-amber-500" required>
+                </div>
+                <div class="mb-6">
+                    <label for="country" class="block text-gray-400 font-semibold mb-2">Country (ሀገርዎን ይምረጡ)</label>
+                    <select id="country" class="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-amber-500 focus:border-amber-500" required>
+                        <option value="" disabled selected>--- Select Your Country ---</option>
+                        <option value="Ethiopia">Ethiopia (ኢትዮጵያ)</option>
+                        <option value="USA">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-primary py-3 rounded-full w-full shadow-lg">
+                    Create Account / Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Support Chatbot Modal -->
+    <div id="supportModal" class="modal">
+        <div class="modal-content max-w-lg">
+            <span class="close-btn" onclick="closeSupportModal()">&times;</span>
+            <h2 class="text-2xl font-bold mb-4 accent-text">Live Support Chat (የቀጥታ የድጋፍ ቡት)</h2>
+            <div id="chat-window" class="chat-container h-64 overflow-y-auto mb-4 p-3 rounded-lg">
+                <div class="message-bot flex mb-2">
+                    <div class="bg-gray-700 text-white p-2 rounded-lg rounded-tl-none max-w-[80%]">ሰላም! ወደ 2TRADERS | EthioTrader ድጋፍ እንኳን ደህና መጡ። በግብይትዎ ወይም በመድረኩ ጥያቄዎች እንዴት ልረዳዎት እችላለሁ?</div>
+                </div>
+            </div>
+            
+            <form id="chat-form">
+                <div class="flex space-x-2">
+                    <input type="text" id="chat-input" placeholder="ጥያቄዎን ይጻፉ..." class="flex-grow px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-amber-500 focus:border-amber-500" required>
+                    <button type="submit" id="send-btn" class="accent-bg hover:bg-amber-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition duration-300">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+            <p class="text-center text-xs mt-2 text-gray-500">
+                Powered by Gemini AI.
+            </p>
+        </div>
+    </div>
+    
+    <script type="module">
+        // --- API Configuration ---
+        const geminiApiKey = ""; 
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiApiKey}`;
+        
+        // Chatbot Configuration
+        const supportSystemPrompt = "You are a friendly and knowledgeable customer support agent for the '2TRADERS | EthioTrader Hub'. Your goal is to assist users with technical questions, pricing, and general information about the platform in a helpful, professional, and slightly conversational tone. Keep your responses concise and focused. Respond primarily in Amharic but switch to English if the user writes in English. Mention that the platform is run by two traders, '2TRADERS' and 'ETHIOPIAN TRADER'.";
+        let chatHistory = [{ role: "model", parts: [{ text: "ሰላም! ወደ 2TRADERS | EthioTrader ድጋፍ እንኳን ደህና መጡ። በግብይትዎ ወይም በመድረኩ ጥያቄዎች እንዴት ልረዳዎት እችላለሁ?" }] }];
+
+        // --- DOM Elements ---
+        const loginModal = document.getElementById('loginModal');
+        const paymentModal = document.getElementById('paymentModal');
+        const supportModal = document.getElementById('supportModal');
+        
+        // Chat elements
+        const chatWindow = document.getElementById('chat-window');
+        const chatInput = document.getElementById('chat-input');
+        const chatForm = document.getElementById('chat-form');
+        const sendBtn = document.getElementById('send-btn');
+        
+        // Crypto Tracker elements
+        const fetchButton = document.getElementById('fetchButton');
+        const cryptoQueryInput = document.getElementById('cryptoQuery');
+        const marketData = document.getElementById('marketData');
+        const statusMessage = document.getElementById('statusMessage');
+        const sourcesList = document.getElementById('sourcesList');
+        const globalSearchInput = document.getElementById('globalSearchInput'); 
+
+        // --- 1. MODAL AND UTILITY FUNCTIONS ---
+        
+        function customAlert(message) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--secondary-bg); color: white; padding: 25px; border-radius: 10px; z-index: 60; box-shadow: 0 0 25px rgba(255, 152, 0, 0.7); border: 2px solid var(--accent-color); text-align: center; max-width: 90vw;';
+            modal.innerHTML = `<p class="mb-4">${message.replace(/\n/g, '<br>')}</p><button onclick="this.parentNode.remove()" class="btn-primary py-2 px-6 rounded-full">እሺ / OK</button>`;
+            document.body.appendChild(modal);
+        }
+        
+        window.showPaymentModal = () => paymentModal.style.display = 'block';
+        window.closePaymentModal = () => paymentModal.style.display = 'none';
+        window.simulatePayment = (method) => {
+            closePaymentModal();
+            customAlert(`የክፍያ ዘዴ ተመርጧል: ${method}።\n\nእውነተኛ አፕሊኬሽን ውስጥ ወደ ክፍያ ገጽ ይመራሉ።`);
+        }
+
+        window.showLoginModal = () => loginModal.style.display = 'block';
+        window.closeLoginModal = () => loginModal.style.display = 'none';
+        window.simulateLogin = (event) => {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const countrySelect = document.getElementById('country');
+            const country = countrySelect.options[countrySelect.selectedIndex].text;
+            closeLoginModal();
+            customAlert(`እንኳን ደህና መጡ፣ ${name} ከተመረጠው ሀገር ${country}።\n\nመግቢያው/ምዝገባው በተሳካ ሁኔታ ተመስሏል።`);
+        }
+
+        window.showSupportModal = () => supportModal.style.display = 'block';
+        window.closeSupportModal = () => supportModal.style.display = 'none';
+        
+        
+        // --- 2. DIGITAL LIBRARY TAB SYSTEM ---
+        window.switchTab = (tabId, buttonElement) => {
+            // Hide all tab panes
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.add('hidden');
+            });
+            // Deactivate all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show the selected pane
+            document.getElementById(tabId).classList.remove('hidden');
+            // Activate the clicked button
+            buttonElement.classList.add('active');
+        }
+
+
+        // --- 3. CHATBOT FUNCTIONS ---
+        
+        function appendMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex mb-2 ${sender === 'user' ? 'justify-end' : ''}`;
+            
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = sender === 'user' 
+                ? 'bg-amber-500 text-gray-900 p-2 rounded-lg rounded-br-none max-w-[80%]' 
+                : 'bg-gray-700 text-white p-2 rounded-lg rounded-tl-none max-w-[80%]';
+            bubbleDiv.innerHTML = text.replace(/\n/g, '<br>');
+            
+            messageDiv.appendChild(bubbleDiv);
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'flex mb-2';
+            typingDiv.innerHTML = `
+                <div class="bg-gray-700 text-white p-2 rounded-lg rounded-tl-none max-w-[80%]">
+                    <span class="text-xs">Typing...</span>
+                </div>
+            `;
+            chatWindow.appendChild(typingDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        async function sendChatMessage(event) {
+            event.preventDefault();
+            const userText = chatInput.value.trim();
+            if (!userText) return;
+
+            appendMessage('user', userText);
+            chatInput.value = '';
+            chatInput.disabled = true;
+            sendBtn.disabled = true;
+
+            chatHistory.push({ role: "user", parts: [{ text: userText }] });
+            showTypingIndicator();
+
+            const payload = {
+                contents: chatHistory,
+                systemInstruction: {
+                    parts: [{ text: supportSystemPrompt }]
+                }
+            };
+            
+            let responseText = "ይቅርታ፣ የድጋፍ ቦት በአሁኑ ጊዜ አገልግሎት ላይ አይደለም። እባክዎን ቆይተው እንደገና ይሞክሩ።";
+            const MAX_RETRIES = 3;
+
+            for (let i = 0; i < MAX_RETRIES; i++) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        responseText = result.candidates[0].content.parts[0].text;
+                        break;
+                    }
+                } catch (error) {
+                    if (i < MAX_RETRIES - 1) {
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                    }
+                }
+            }
+
+            hideTypingIndicator();
+            appendMessage('bot', responseText);
+            chatHistory.push({ role: "model", parts: [{ text: responseText }] });
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            chatInput.focus();
+        }
+
+
+        // --- 4. LIVE CRYPTO DATA & GLOBAL SEARCH FUNCTIONS (Using Grounding) ---
+        
+        const textToHtml = (text) => text.replace(/\n/g, '<br>');
+
+        function showStatusMessage(message, className) {
+            statusMessage.textContent = message;
+            statusMessage.className = `p-3 mb-4 rounded-lg text-center font-medium transition duration-300 ${className}`;
+            statusMessage.classList.remove('hidden');
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+            }, 5000);
+        }
+        
+        async function runSearchQuery(query, isGlobal = false) {
+            if (!query) {
+                showStatusMessage('እባክዎን የፍለጋ ጥያቄ ያስገቡ።', 'bg-red-900 text-red-300 border border-red-500');
+                return;
+            }
+
+            if (!isGlobal) {
+                marketData.innerHTML = '<div class="flex justify-center items-center h-full min-h-[150px]"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div><span class="ml-3 accent-text">መረጃ በመፈለግ ላይ ነው...</span></div>';
+                sourcesList.innerHTML = '';
+                fetchButton.disabled = true;
+                fetchButton.textContent = 'Fetching...';
+                showStatusMessage('ጥያቄ ወደ Gemini API ተልኳል...', 'bg-blue-900 text-blue-300 border border-blue-500');
+            } else {
+                 customAlert(`**Global Search Simulation:**\n\nSearching for: "${query}".\n\nResults will now be displayed in the Live Market Grounding section for simplicity. Scroll to the section to view.`);
+                 cryptoQueryInput.value = query;
+                 window.location.hash = '#live-market';
+            }
+
+            const cryptoSystemPrompt = "You are a specialized financial market data analyst. Use Google Search grounding to find the most current and real-time market data for the requested query. If the query is about specific financial instruments (like 'Bitcoin price', 'Gold price', 'EUR/USD rate'), prioritize price, 24h change, and market cap/volume. If the query is general (like 'what is copy trading'), provide a concise, informative definition or summary suitable for a financial dashboard. Always include the currency unit (e.g., USD, %, Billion USD) when applicable. Format the response neatly using bold text and lists, and start with a professional heading based on the query, for example: '### Bitcoin and Ethereum Real-Time Data'.";
+            
+            const payload = {
+                contents: [{ parts: [{ text: query }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: cryptoSystemPrompt }]
+                },
+            };
+
+            let response;
+            let success = false;
+            const MAX_RETRIES = 3;
+
+            for (let i = 0; i < MAX_RETRIES; i++) {
+                try {
+                    const delay = Math.pow(2, i) * 1000;
+                    if (i > 0) await new Promise(resolve => setTimeout(resolve, delay));
+                    
+                    response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        success = true;
+                        break;
+                    } else {
+                        throw new Error(`API returned status code ${response.status}`);
+                    }
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                }
+            }
+
+            fetchButton.disabled = false;
+            fetchButton.textContent = 'Fetch Live Data';
+
+            if (!success || !response) {
+                showStatusMessage('መረጃ ማምጣት አልተቻለም። እባክዎ እንደገና ይሞክሩ።', 'bg-red-900 text-red-300 border border-red-500');
+                marketData.innerHTML = '<p class="text-red-500">ስህተት: የቀጥታ መረጃ ማግኘት አልተቻለም።</p>';
+                return;
+            }
+
+            try {
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    const text = candidate.content.parts[0].text;
+                    marketData.innerHTML = textToHtml(text);
+                    showStatusMessage('መረጃው በተሳካ ሁኔታ ተገኝቷል።', 'bg-green-900 text-green-300 border border-green-500');
+
+                    // Extract and display sources
+                    let sources = [];
+                    const groundingMetadata = candidate.groundingMetadata;
+                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                        sources = groundingMetadata.groundingAttributions
+                            .map(attribution => ({
+                                uri: attribution.web?.uri,
+                                title: attribution.web?.title,
+                            }))
+                            .filter(source => source.uri && source.title);
+                    }
+
+                    if (sources.length > 0) {
+                        sourcesList.innerHTML = '';
+                        sources.forEach((source, index) => {
+                            const link = document.createElement('a');
+                            link.href = source.uri;
+                            link.target = "_blank";
+                            link.classList.add('text-amber-500', 'hover:underline', 'block', 'truncate');
+                            link.textContent = `${index + 1}. ${source.title} (${source.uri.substring(0, 40)}...)`;
+                            sourcesList.appendChild(link);
+                        });
+                    } else {
+                        sourcesList.innerHTML = '<p class="italic text-gray-500">ለዚህ ጥያቄ የተጠቀሱ ምንጮች የሉም።</p>';
+                    }
+
+                } else {
+                    showStatusMessage('API ያልተጠበቀ ምላሽ ሰጥቷል።', 'bg-red-900 text-red-300 border border-red-500');
+                    marketData.innerHTML = '<p class="text-red-500">ስህተት: ያልተጠበቀ የመረጃ ቅርጸት።</p>';
+                }
+            } catch (e) {
+                console.error("Parsing Error:", e);
+                showStatusMessage('ምላሹን በሚያካሂዱበት ጊዜ ያልተጠበቀ ስህተት ተከስቷል።', 'bg-red-900 text-red-300 border border-red-500');
+                marketData.innerHTML = '<p class="text-red-500">ስህተት: መረጃውን ማካሄድ አልተቻለም።</p>';
+            }
+        }
+
+
+        // --- 5. Initialization and Event Listeners ---
+        
+        window.onload = () => {
+             // Load default crypto data on page load
+             runSearchQuery(cryptoQueryInput.value.trim());
+             
+             // Attach event listeners for forms and buttons
+             fetchButton.addEventListener('click', () => runSearchQuery(cryptoQueryInput.value.trim()));
+             cryptoQueryInput.addEventListener('keypress', (e) => {
+                 if (e.key === 'Enter') {
+                     e.preventDefault();
+                     runSearchQuery(cryptoQueryInput.value.trim());
+                 }
+             });
+             chatForm.addEventListener('submit', sendChatMessage);
+             loginModal.querySelector('form').addEventListener('submit', simulateLogin);
+             globalSearchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    runSearchQuery(globalSearchInput.value.trim(), true);
+                }
+             });
+        };
+
+    </script>
+</body>
+</html>
